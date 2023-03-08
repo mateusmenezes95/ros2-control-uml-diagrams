@@ -1,0 +1,32 @@
+@startuml "Actuator Class Diagram"
+skinparam classAttributeIconSize 0
+skinparam NoteTextAlignment center
+
+package "actuator.hpp" {
+    class Actuator {
+        -unique_ptr<ActuatorInterface> impl_;
+        +initialize(actuator_info): state
+        +configure(): state
+        +cleanup(): state
+        +shutdown(): state
+        +activate(): state
+        +deactivate(): state
+        +error(): state
+        +export_state_interfaces(): vector<StateInterfaces>
+        +export_command_interfaces(): vector<CommandInterfaces>
+        +prepare_command_mode_switch(): return_type
+        +perform_command_mode_switch(): return_type
+        +get_name() const: string
+        +const get_state() const: state
+        +read(time, period): return_type
+        +write(time, period): return_type
+    }
+    note left of Actuator::impl_
+        Transfer the contents
+        managed only using
+        move semantics
+    end note
+}
+
+
+@enduml

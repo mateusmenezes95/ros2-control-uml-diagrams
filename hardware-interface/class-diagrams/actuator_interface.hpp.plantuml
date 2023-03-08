@@ -1,0 +1,63 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package hardware_interface {
+    package actuator_interface.hpp as ActuatorInterfaceHeader{
+        class ActuatorInterface {
+            +virtual on_init(hardware_info): CallbackReturn
+            +virtual export_state_interfaces() = 0: vector<StateInterface>
+            +virtual export_command_interfaces() = 0: vector<CommandInterfaces>
+            +virtual prepare_command_mode_switch(start_interfaces, stop_interfaces): return_type
+            +virtual read(time, period) = 0: return_type
+            +virtual write(time, period) = 0: return_type
+            +virtual get_name() const: string
+            +get_state() const: const State &
+            +set_state(new_state): void
+            #info: HardwareInfo
+            #lifecycle_state: State
+        }
+    }
+
+    package handle.hpp {
+        hide methods
+        hide members
+        class StateInterface
+        class CommandInterface
+    }
+
+    package types {
+        package hardware_interface_return_values.hpp {
+            hide methods
+            hide members
+            enum ReturnType         
+        }
+    }
+}
+
+package rclcpp {
+    hide methods
+    hide members
+    class Time
+    class Duration
+    package node_interfaces {
+        hide methods
+        hide members
+        class LifecycleNodeInterface
+    }
+}
+
+package rclcpp_lifecycle {
+    hide methods
+    hide members
+    class State
+}
+
+ActuatorInterface -up-|> LifecycleNodeInterface
+ActuatorInterface ..> StateInterface : <<depends>>
+ActuatorInterface ..> CommandInterface : <<depends>>
+ActuatorInterface .up.> State : <<depends>>
+ActuatorInterface ..> ReturnType : <<uses>>
+ActuatorInterface .up.> Time : <<depends>>
+ActuatorInterface .up.> Duration : <<depends>>
+
+@enduml

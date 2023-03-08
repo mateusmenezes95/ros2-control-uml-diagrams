@@ -1,0 +1,48 @@
+@startuml "Resource Manager Class diagram"
+skinparam classAttributeIconSize 0
+
+package resource_manager.hpp {
+    class ResourceManager {
+        +load_urdf(urdf, validated_interfaces): void
+        +claim_state_interfaces(key: string): LoanedStateInterface
+        +state_interface_keys(): vector<string>
+        +available_state_interfaces(): vector<string>
+        +state_interfaces_is_available(name): bool
+        +import_controller_reference_interfaces(controller_name, interfaces: vector<CommandInterfaces>): string
+        +get_controller_reference_interface_names(controller_name): string
+        +make_controller_reference_interfaces_unavailable(controller_name): void
+        +remove_controller_reference_interfaces(controller_name): void
+        +cache_controller_to_hardware(controller_name, interfaces: vector<string>)
+        +get_cached_controllers_to_hardware(hardware_name): vector<string>
+        +command_interface_is_claimed(key: string): bool
+        +claim_command_interfaces(key: string): LoanedCommandInterface
+        +command_interfaces_keys(): vector<string>
+        +available_command_interfaces(): vector<string>
+        +command_interfaces_is_available(interface: string): bool
+        +actuator_components_size(): size_t
+        +sensor_components_size(): size_t
+        +system_components_size(): size_t
+        +import_component(actuator: unique_ptr<ActuatorInterface>, hardware_info): void
+        +import_component(actuator: unique_ptr<SystemInterface>, hardware_info): void
+        +import_component(actuator: unique_ptr<ActuatorInterface>, hardware_info): void
+        +get_components_status(): unordered_map<string, HardwareComponentInfo>
+        +prepare_command_mode_switch(start_interfaces, stop_interfaces): bool
+        +perform_command_mode_switch(start_interfaces, stop_interfaces): bool
+        +set_component_state(component_name, target_state: lifecycle_state): return_type
+        +read(time, period): HardwareReadWriteStatus
+        +write(time, period): HardwareReadWriteStatus
+        +activate_all_components(): void
+        +command_interface_exists(key: string): bool
+        +state_interface_exists(key: string): bool
+        -validate_storage(hardware_info): void
+        -release_command_interface(name: key): void
+        -claimed_command_interface_map: unordered_map<string, bool>
+        -resource_interfaces_lock: recursive_mutex
+        -resource_interfaces_lock: recursive_mutex
+        -resources_lock: recursive_mutex
+        -resource_storage: unique_ptr<ResourceStorage>
+        read_write_status: HardwareReadWriteStatus
+    }
+}
+
+@enduml

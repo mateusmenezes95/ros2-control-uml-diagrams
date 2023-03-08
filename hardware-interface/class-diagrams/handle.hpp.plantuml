@@ -1,0 +1,41 @@
+@startuml
+skinparam classAttributeIconSize 0
+package hardware_interface {
+    package "handle.hpp" as Handle {
+        class ReadOnlyHandle {
+            #prefix_name: std::string
+            #interfaxe_name: std::string
+            #value_ptr: double ptr
+            +const get_name(): const std::string
+            +const get_interface_name(): const std::string &
+            -get_value() const: double
+        }
+
+        class ReadWriteHandle {
+            +set_value(value: double): void
+        }
+
+        package hardware_interface_return_values.hpp {
+            enum ReturnType as "return_type" <<stereotype>> {
+                OK = 0
+                ERROR = 1
+            }
+        }
+
+        class StateInterface
+        class CommandInterface
+
+        ReadWriteHandle -up-|> ReadOnlyHandle
+        StateInterface  -up-|> ReadOnlyHandle
+        CommandInterface -up-|> ReadWriteHandle
+
+        note left of ReadOnlyHandle : Has explicit default constructors\nHabe a bool operation overload\nHas a virtual destructor
+        note right of ReadOnlyHandle::get_value
+            Throws exception if value_ptr equals to null
+        end note
+        note bottom of StateInterface : Has only explicit constructors
+        note right of ReadWriteHandle : Has a virtual destructor
+        note bottom of CommandInterface : Copy constructor is actively deleted\nCommand interfaces are having\na unique ownership and thus\ncan't be copied in order to\navoid simultaneous writes to\nthe same resource
+    }
+}
+@enduml
